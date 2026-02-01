@@ -1,4 +1,4 @@
-package design
+package basic
 
 type Size struct {
 	W float32

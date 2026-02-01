@@ -1,4 +1,4 @@
-package design
+package basic
 
 // Point encapsula um ponto x e y no espaço, com operações como soma
 // e subtração de pontos para auxiliar em movimentação e centralização no design
