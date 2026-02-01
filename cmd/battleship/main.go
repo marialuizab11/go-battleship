@@ -8,6 +8,9 @@ import (
 	"github.com/allanjose001/go-battleship/internal/ai"
 	"github.com/allanjose001/go-battleship/internal/entity"
 	"github.com/allanjose001/go-battleship/internal/service"
+  "github.com/allanjose001/go-battleship/game"
+	"github.com/allanjose001/go-battleship/game/components"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 func main() {
@@ -33,8 +36,6 @@ func main() {
 	//fmt.Println("");
 
 	//entity.AttackPosition(board1, 1, 1);
-
-
 	
 	//========= teste AI ===========
 	
@@ -55,11 +56,8 @@ func main() {
 
 	service.SaveProfile(*profile1);
 	err := service.SaveProfile(*profile1)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	//profile2, err := service.FindProfile("Player2");
+  
+  //profile2, err := service.FindProfile("Player2");
 	//if err != nil {
 	//	log.Fatal(err)
 	//}
@@ -67,5 +65,15 @@ func main() {
 	//fmt.Printf("perfil encontrado: %+v\n", profile2);
 
 	//service.RemoveProfile("Player1");
+  
+  //============= teste do front ========================
+
+	components.InitFonts() //carrega a fonte apenas uma vez
+	g := game.NewGame()
+	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
+	err := ebiten.RunGame(g)
+	if err != nil {
+		panic(err)
+	}
 
 }
