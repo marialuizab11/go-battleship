@@ -13,23 +13,23 @@ type ComponentsTestScene struct {
 	containerTest components.Widget
 }
 
-func (c ComponentsTestScene) OnEnter(prev Scene) {
-	c.init1() //ou init dois, só escolher o teste
+func (c *ComponentsTestScene) OnEnter(prev Scene, size basic.Size) {
+	c.init2(size) //ou init dois, só escolher o teste
 }
 
-func (c ComponentsTestScene) OnExit(next Scene) {
+func (c *ComponentsTestScene) OnExit(next Scene) {
 }
 
-func (c ComponentsTestScene) Update() error {
+func (c *ComponentsTestScene) Update() error {
 	return nil
 }
 
-func (c ComponentsTestScene) Draw(screen *ebiten.Image) {
+func (c *ComponentsTestScene) Draw(screen *ebiten.Image) {
 	c.containerTest.Draw(screen)
 }
 
 // teste com dois containers de exemplo
-func (c ComponentsTestScene) init1() {
+func (c *ComponentsTestScene) init1() {
 	contd := components.NewContainer(
 		basic.Point{50.0, 50.0},
 		basic.Size{W: 400, H: 600},
@@ -42,7 +42,7 @@ func (c ComponentsTestScene) init1() {
 	)
 
 	cont2 := components.NewContainer(
-		basic.Point{200, 0},
+		basic.Point{0, 0},
 		basic.Size{W: 1000, H: 700},
 		0.0,
 		colors.White,
@@ -59,11 +59,11 @@ func (c ComponentsTestScene) init1() {
 // (text não fica perfeito em crossalign (eixo y) start
 // e end porque a renderização dá um retangulo um pouco maior ao text)
 // posso tentar resolver no futuro conforme necessário
-func (c ComponentsTestScene) init2() {
-	row := components.NewRow(
+func (c *ComponentsTestScene) init2(size basic.Size) {
+	row := components.NewColumn(
 		basic.Point{},
 		20.0,
-		basic.Size{},
+		size,
 		basic.Center,
 		basic.Center,
 		[]components.Widget{

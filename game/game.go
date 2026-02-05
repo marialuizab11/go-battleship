@@ -3,14 +3,12 @@ package game
 import (
 	"image/color"
 
+	"github.com/allanjose001/go-battleship/game/components/basic"
 	"github.com/allanjose001/go-battleship/game/scenes"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-const (
-	gameW = 1280
-	gameH = 720
-)
+var windowSize = basic.Size{W: 1280, H: 720}
 
 type Game struct {
 	scene scenes.Scene
@@ -20,7 +18,7 @@ func NewGame() *Game {
 	g := &Game{
 		scene: &scenes.ButtonScene{},
 	}
-	g.scene.OnEnter(nil) //escolher o teste no OnEnter dessa struct
+	g.scene.OnEnter(nil, windowSize) //escolher o teste no OnEnter dessa struct
 	return g
 }
 func (g *Game) Update() error {
@@ -34,5 +32,5 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) Layout(_, _ int) (int, int) {
-	return gameW, gameH
+	return int(windowSize.W), int(windowSize.H)
 }

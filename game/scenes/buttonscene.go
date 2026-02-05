@@ -7,56 +7,43 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-type ButtonScene struct {
-	button1 *components.Button
-	button2 *components.Button
-	row     components.Row
+// ButtonScene esse teste adiciona o botão voltar á trela, porem infinitamente rsrsrs, clickar em voltar remove ele da group
+// (remove e add não devem ter mtos usos, foi só para mostrar o botão funcionando)
+type ButtonScene struct { //teste porco mas ok
+	group components.Widget
 }
 
-func (b *ButtonScene) OnEnter(prev Scene) {
-	b.button1 = components.NewButton(
-		basic.Point{},
-		basic.Size{W: 200.0, H: 70.0},
-		"jogar",
-		colors.Blue,
-		nil,
-		func(bt *components.Button) {
-		},
-	)
-	b.button2 = components.NewButton(
-		basic.Point{},
-		basic.Size{W: 200.0, H: 70.0},
-		"voltar",
-		colors.Dark,
-		nil,
-		func(bt *components.Button) {
-		},
-	)
-	b.row = *components.NewRow(
+func (b *ButtonScene) OnEnter(_ Scene, screenSize basic.Size) {
+
+	b.group = components.NewRow(
 		basic.Point{},
 		100,
-		basic.Size{
-			W: 1280,
-			H: 720,
-		},
+		screenSize,
 		basic.Center,
 		basic.Center,
 		[]components.Widget{
-			b.button1,
-			b.button2,
+			components.NewButton(
+				basic.Point{},
+				basic.Size{W: 200.0, H: 70.0},
+				"pressione",
+				colors.Blue,
+				nil,
+				func(bt *components.Button) {
+				},
+			),
 		},
 	)
 }
 
-func (b *ButtonScene) OnExit(next Scene) {
+func (b *ButtonScene) OnExit(_ Scene) {
 
 }
 
 func (b *ButtonScene) Update() error {
-	b.row.Update()
+	b.group.Update(basic.Point{})
 	return nil
 }
 
 func (b *ButtonScene) Draw(screen *ebiten.Image) {
-	b.row.Draw(screen)
+	b.group.Draw(screen)
 }
