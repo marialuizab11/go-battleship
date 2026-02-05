@@ -8,8 +8,8 @@ var (
 	Black       = color.RGBA{A: 255}
 	Red         = color.RGBA{R: 255, A: 255}
 	Green       = color.RGBA{G: 255, A: 255}
-	Blue        = color.RGBA{G: 200, B: 255, A: 1}
-	Dark        = color.RGBA{R: 2, G: 94, B: 120, A: 1}
+	Blue        = color.RGBA{G: 200, B: 255, A: 255}
+	Dark        = color.RGBA{R: 2, G: 94, B: 120, A: 255}
 	Transparent = color.RGBA{}
 )
 
