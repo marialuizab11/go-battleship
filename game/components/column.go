@@ -8,7 +8,7 @@ import (
 // Column organiza widgets em uma coluna, com espaçamento e largura opcional fixa
 // <USAR A LARGURA DO PAI PARA ALINHAMENTO NO EIXO SECUNDARIO (X)>
 type Column struct {
-	Pos basic.Point //posição inicial
+	Pos, currentPos basic.Point //posição inicial
 
 	Spacing float32 //espaçamento vertical entre elementos
 
@@ -39,7 +39,7 @@ func NewColumn(
 		Spacing:    spacing,
 		Children:   children,
 		MainAlign:  mainAlign,
-		CrossAlign: mainAlign,
+		CrossAlign: crossAlign,
 	}
 
 	// posicionamento inicial (Start/Start)
@@ -61,22 +61,18 @@ func NewColumn(
 }
 
 // Update chama Update de todos os filhos
-func (c *Column) Update() {
+func (c *Column) Update(offset basic.Point) {
+	c.currentPos = c.Pos.Add(offset)
+
 	for _, w := range c.Children {
-		w.Update()
+		w.Update(c.Pos.Add(offset))
 	}
 }
 
-func (c *Column) draw(screen *ebiten.Image, offset basic.Point) {
-	final := c.Pos.Add(offset)
-	for _, w := range c.Children {
-		w.draw(screen, final)
-	}
-}
-
-// Draw chama Draw de todos os filhos
 func (c *Column) Draw(screen *ebiten.Image) {
-	c.draw(screen, basic.Point{})
+	for _, w := range c.Children {
+		w.Draw(screen)
+	}
 }
 
 func (c *Column) alignMain(parentSize basic.Size) {
@@ -108,9 +104,9 @@ func (c *Column) alignCross(parentSize basic.Size) {
 		case basic.Start:
 			continue
 		case basic.Center:
-			p.X = c.Pos.X + (parentSize.W-size.W)/2
+			p.X = (parentSize.W - size.W) / 2
 		case basic.End:
-			p.X = c.Pos.X + (parentSize.W - size.W)
+			p.X = parentSize.W - size.W
 		}
 
 		w.SetPos(p)
@@ -154,14 +150,14 @@ func (c *Column) GetSize() basic.Size {
 
 // init serve para um primeiro posicionamento dos elementos (start x start)
 func (c *Column) init() {
-	cursorY := c.Pos.Y
+	cursorY := float32(0)
 
 	for i, w := range c.Children {
 		size := w.GetSize()
 
 		w.SetPos(basic.Point{
-			X: c.Pos.X, // cross como Start
-			Y: cursorY, // main sequencial
+			X: 0,
+			Y: cursorY,
 		})
 
 		cursorY += size.H

@@ -15,11 +15,8 @@ type Widget interface {
 	GetSize() basic.Size
 
 	//Update Atualiza o widget//seus filhos no padrão ebiten
-	Update()
+	Update(offset basic.Point)
 
-	// Draw Desenha o widget/seus filhos chamando draw
+	// Draw Desenha o widget/seus filhos chamando Draw
 	Draw(screen *ebiten.Image)
-
-	//draw serve para corrigir posicionamento em arvores de widgets
-	draw(screen *ebiten.Image, offset basic.Point)
 }

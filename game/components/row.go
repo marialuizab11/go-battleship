@@ -14,6 +14,7 @@ type Row struct {
 	MainAlign  basic.Align // alinhamento dos elementos no eixo principal (center, start, end)
 	CrossAlign basic.Align //eixo cruzado
 	size       basic.Size  //para calculo de tamanho caso necessario
+	currentPos basic.Point
 }
 
 // NewRow cria uma linha e já calcula a posição de todos os widgets,
@@ -57,38 +58,31 @@ func NewRow(
 
 // posiciona filhos como Start/Start
 func (r *Row) init() {
-	cursorX := r.Pos.X
+	cursorX := float32(0) // posição local relativa
 
 	for _, w := range r.Children {
 		size := w.GetSize()
-
 		w.SetPos(basic.Point{
 			X: cursorX,
-			Y: r.Pos.Y,
+			Y: 0, // local Y relativo
 		})
-
 		cursorX += size.W + r.Spacing
 	}
 	r.calcSize()
 }
 
 // Update chama Update de todos os filhos
-func (r *Row) Update() {
+func (r *Row) Update(offset basic.Point) {
+	r.currentPos = r.Pos.Add(offset)
 	for _, w := range r.Children {
-		w.Update()
+		w.Update(r.currentPos)
 	}
 }
 
-// Draw chama draw
+// Draw chama Draw de todos os filhos fazendo recursão com posição na arvore
 func (r *Row) Draw(screen *ebiten.Image) {
-	r.draw(screen, basic.Point{})
-}
-
-// draw chama draw de todos os filhos fazendo recursão com posição na arvore
-func (r *Row) draw(screen *ebiten.Image, offset basic.Point) {
-	final := r.Pos.Add(offset)
 	for _, w := range r.Children {
-		w.draw(screen, final)
+		w.Draw(screen)
 	}
 }
 
@@ -108,12 +102,12 @@ func (r *Row) alignMain(parentSize basic.Size) {
 
 	for _, w := range r.Children {
 		p := w.GetPos()
-		p.X += offsetX
+		// mantém o deslocamento relativo original dentro da Row
+		p.X = r.Pos.X + (p.X - r.Pos.X) + offsetX
 		w.SetPos(p)
 	}
 }
 
-// TODO: criar uma classe util de alinhamento caso tempo livre
 // alinhamento no eixo cruzado (vertical)
 func (r *Row) alignCross(parentSize basic.Size) {
 	for _, w := range r.Children {
@@ -122,8 +116,9 @@ func (r *Row) alignCross(parentSize basic.Size) {
 
 		switch r.CrossAlign {
 		case basic.Start:
-			continue
+			// mantém o Y relativo original
 		case basic.Center:
+			// centraliza verticalmente relativo à Row
 			p.Y = r.Pos.Y + (parentSize.H-size.H)/2
 		case basic.End:
 			p.Y = r.Pos.Y + (parentSize.H - size.H)

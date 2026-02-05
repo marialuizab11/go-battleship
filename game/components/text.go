@@ -13,12 +13,12 @@ import (
 
 // Text widget que desenha texto com uma font.Face
 type Text struct {
-	Pos      basic.Point
-	Color    color.Color
-	Text     string
-	face     font.Face
-	Size     basic.Size // opcional, para layout
-	fontSize int
+	Pos, currentPos basic.Point
+	Color           color.Color
+	Text            string
+	face            font.Face
+	Size            basic.Size // opcional, para layout
+	fontSize        int
 }
 
 var GoldmanFont *opentype.Font // carregada uma vez
@@ -85,31 +85,25 @@ func (t *Text) updateSize() {
 	}
 }
 
-// Draw desenha componente com offset calculado
-func (t *Text) Draw(screen *ebiten.Image) {
-	t.draw(screen, basic.Point{})
-}
+// Draw desenha componente com offset recebido em Update e somado a pos do Widget
 
-func (t *Text) draw(screen *ebiten.Image, offset basic.Point) {
+func (t *Text) Draw(screen *ebiten.Image) {
 
 	baseline := float32(t.face.Metrics().Ascent.Round())
-
-	//serve para corrigir posição em arvores de widgets
-	final := t.Pos.Add(offset)
 
 	if t.Color == nil {
 		t.Color = color.White
 	}
 
 	text.Draw(screen, t.Text, t.face,
-		int(final.X),
-		int(baseline+final.Y),
+		int(t.currentPos.X),
+		int(baseline+t.currentPos.Y),
 		t.Color,
 	)
 }
 
-func (t *Text) Update() {
-	// criar update caso necessário
+func (t *Text) Update(point basic.Point) {
+	t.currentPos = t.Pos.Add(point)
 }
 
 func (t *Text) GetPos() basic.Point { return t.Pos }
