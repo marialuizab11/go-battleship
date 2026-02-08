@@ -11,6 +11,6 @@ func (s *Ship) IsDestroyed() bool {
 	return s.HitCount >= s.Size
 }
 
-func (s *Ship) isHorizontal() bool {
+func (s *Ship) IsHorizontal() bool {
 	return s.Horizontal
 }

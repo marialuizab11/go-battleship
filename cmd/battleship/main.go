@@ -18,31 +18,29 @@ func main() {
 	//========= teste inserção no tabuleiro ============
 	board1 := new(entity.Board);
 
-	barco1 := new(entity.Ship);
-	barco1.Size = 3;
-	barco1.Horizontal = true;
+	fleet1 := entity.NewFleet();
 
-	barco2 := new(entity.Ship);
-	barco2.Size = 3;
-	barco2.Horizontal = false;
-
-
-	board1.PlaceShip(barco1, 1, 1)
-
-	board1.PlaceShip(barco2, 5, 5)
+	board1.PlaceShip(fleet1.GetShipByIndex(0), 1, 1)
+	board1.PlaceShip(fleet1.GetShipByIndex(1), 4, 4)
 
 	entity.PrintBoard(board1);
-
-	//fmt.Println("");
-
-	//entity.AttackPosition(board1, 1, 1);
 	
 	//========= teste AI ===========
 	
-	aiPlayer := ai.NewEasyAIPlayer();
-	
+	//aiPlayer := ai.NewEasyAIPlayer();
+	aiPlayer := ai.NewMediumAIPlayer(fleet1);
+
 	aiPlayer.Attack(board1);
-	
+	aiPlayer.Attack(board1);
+	aiPlayer.Attack(board1);
+	aiPlayer.Attack(board1);
+	aiPlayer.Attack(board1);
+	aiPlayer.Attack(board1);
+	aiPlayer.Attack(board1);
+	aiPlayer.Attack(board1);
+	aiPlayer.Attack(board1);
+		
+
 	entity.PrintBoard(board1);
 
 	//========== teste de profile ===========

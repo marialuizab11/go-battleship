@@ -4,7 +4,7 @@ type Fleet struct {
 	Ships [5]*Ship
 }
 
-func _() *Fleet {
+func NewFleet() *Fleet {
 	fleet := &Fleet{}
 
 	fleet.Ships[0] = &Ship{Name: "Porta-Aviões", Size: 6, Horizontal: true}
@@ -16,7 +16,7 @@ func _() *Fleet {
 	return fleet
 }
 
-func (fleet *Fleet) isFleetDestroyed() bool {
+func (fleet *Fleet) IsFleetDestroyed() bool {
 	for i := 0; i < 5; i++ {
 		if !fleet.Ships[i].IsDestroyed() { //se algum navio ainda não foi destruido
 			return false //retorna falso
@@ -26,10 +26,10 @@ func (fleet *Fleet) isFleetDestroyed() bool {
 	return true
 }
 
-func (fleet *Fleet) getFleetShips() (ships []*Ship) {
+func (fleet *Fleet) GetFleetShips() (ships []*Ship) {
 	return fleet.Ships[:]
 }
 
-func (fleet *Fleet) getShipByIndex(index int) *Ship {
+func (fleet *Fleet) GetShipByIndex(index int) *Ship {
 	return fleet.Ships[index]
 }
