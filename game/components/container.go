@@ -10,22 +10,32 @@ import (
 )
 
 // Container retangulo que comporta um widget (tambem pode ser column ou row)
+// pode possuir bordas arredondadas ou não (colocar 0 em radius)
+// pode ter qualquer widget como child
 type Container struct {
-	Pos    basic.Point
-	Size   basic.Size
-	Radius float32 //opcional
-	Color  color.Color
-	Child  Widget
+	Pos, currentPos basic.Point
+	Size            basic.Size
+	Radius          float32 //opcional
+	Color           color.Color
+	Child           Widget
 
 	MainAlign  basic.Align
 	CrossAlign basic.Align
 
 	OnUpdate func(c *Container) //para injetar algum comportamento
+
 }
 
-func NewContainer(pos basic.Point, size basic.Size,
-	radius float32, color color.Color, mainAlign basic.Align, crossAlign basic.Align,
-	child Widget, callBack func(c *Container)) *Container {
+func NewContainer(
+	pos basic.Point,
+	size basic.Size,
+	radius float32,
+	color color.Color,
+	mainAlign basic.Align,
+	crossAlign basic.Align,
+	child Widget,
+	callBack func(c *Container),
+) *Container {
 	c := &Container{
 		Pos:        pos,
 		Size:       size,
@@ -43,26 +53,22 @@ func NewContainer(pos basic.Point, size basic.Size,
 
 }
 
-func (c *Container) Update() {
-	//fazer logica caso queira alterar o container na tela
+func (c *Container) Update(offset basic.Point) {
+	c.currentPos = c.Pos.Add(offset)
+
 	if c.OnUpdate != nil {
 		c.OnUpdate(c)
 	}
 	if c.Child != nil {
-		c.Child.Update()
+		c.Child.Update(c.currentPos)
 	}
 }
 
-// Draw desenha o container e seu filho (opcional)
+// Draw desenha o container e seu filho
 func (c *Container) Draw(screen *ebiten.Image) {
-	c.draw(screen, basic.Point{})
-}
-
-func (c *Container) draw(screen *ebiten.Image, offset basic.Point) {
-	final := c.Pos.Add(offset)
-	drawRoundedRect(screen, final, c.Size, c.Radius, c.Color)
+	DrawRoundedRect(screen, c.currentPos, c.Size, c.Radius, c.Color)
 	if c.Child != nil {
-		c.Child.draw(screen, final)
+		c.Child.Draw(screen)
 	}
 }
 
@@ -82,7 +88,7 @@ func (c *Container) SetSize(s basic.Size) {
 	c.Size = s
 }
 
-// alinhamento de child dentro do container
+// alignChild alinhamento de child dentro do container
 func (c *Container) alignChild() {
 	if c.Child == nil {
 		return
@@ -118,8 +124,8 @@ func (c *Container) alignChild() {
 // w e h podem ser 0 para usar tamanho padrão.
 // OnClick e OnHover podem ser nil.
 
-// drawRoundedRect desenha um retangulo com borda arredondada
-func drawRoundedRect(dst *ebiten.Image, pos basic.Point, size basic.Size, r float32, c color.Color) {
+// DrawRoundedRect desenha um retangulo com borda arredondada (opcional)
+func DrawRoundedRect(dst *ebiten.Image, pos basic.Point, size basic.Size, r float32, c color.Color) {
 	if c == nil { //nesse caso serve apenas para referencia de tamanho (semelhante a sizedbox)
 		c = colors.Transparent
 	}
@@ -158,10 +164,10 @@ func drawRoundedRect(dst *ebiten.Image, pos basic.Point, size basic.Size, r floa
 
 	cr, cg, cb, ca := c.RGBA()
 
-	drawOpts := &vector.DrawPathOptions{
+	DrawOpts := &vector.DrawPathOptions{
 		AntiAlias: true,
 	}
-	drawOpts.ColorScale.Scale(
+	DrawOpts.ColorScale.Scale(
 		float32(cr)/0xffff,
 		float32(cg)/0xffff,
 		float32(cb)/0xffff,
@@ -172,5 +178,9 @@ func drawRoundedRect(dst *ebiten.Image, pos basic.Point, size basic.Size, r floa
 		FillRule: vector.FillRuleNonZero,
 	}
 
-	vector.FillPath(dst, &p, fillOpts, drawOpts)
+	vector.FillPath(dst, &p, fillOpts, DrawOpts)
+}
+
+func (c *Container) SetColor(color color.Color) {
+	c.Color = color
 }

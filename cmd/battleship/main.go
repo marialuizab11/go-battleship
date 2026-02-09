@@ -15,6 +15,23 @@ import (
 
 func main() {
 
+	/*//========= teste inserção no tabuleiro ============
+	board1 := new(entity.Board)
+
+	barco1 := new(entity.Ship)
+	barco1.Size = 3
+	barco1.Horizontal = true
+
+	barco2 := new(entity.Ship)
+	barco2.Size = 3
+	barco2.Horizontal = false
+
+	entity.PlaceShip(board1, barco1, 1, 1)
+
+	entity.PlaceShip(board1, barco2, 5, 5)
+
+	entity.PrintBoard(board1)
+
 	//========= teste inserção no tabuleiro ============
 	board1 := new(entity.Board);
 
@@ -63,7 +80,6 @@ func main() {
 	//fmt.Printf("perfil encontrado: %+v\n", profile2);
 
 	//service.RemoveProfile("Player1");
-  
   //============= teste do front ========================
 
 	components.InitFonts() //carrega a fonte apenas uma vez
