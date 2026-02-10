@@ -14,13 +14,14 @@ type ComponentsTestScene struct {
 }
 
 func (c *ComponentsTestScene) OnEnter(prev Scene, size basic.Size) {
-	c.init2(size) //ou init dois, só escolher o teste
+	c.init1() //ou init dois, só escolher o teste
 }
 
 func (c *ComponentsTestScene) OnExit(next Scene) {
 }
 
 func (c *ComponentsTestScene) Update() error {
+	c.containerTest.Update(basic.Point{})
 	return nil
 }
 
