@@ -66,7 +66,7 @@ func (c *ComponentsTestScene) init2(size basic.Size) {
 		20.0,
 		size,
 		basic.Center,
-		basic.Center,
+		basic.End,
 		[]components.Widget{
 			components.NewContainer(
 				basic.Point{},
